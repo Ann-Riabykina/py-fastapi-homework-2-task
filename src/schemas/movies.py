@@ -98,3 +98,15 @@ class MovieUpdateRequestSchema(_BaseSchema):
 
 class MessageResponseSchema(_BaseSchema):
     detail: str
+    
+MovieDetailSchema = MovieDetailResponseSchema
+MovieCreateSchema = MovieCreateRequestSchema
+MovieUpdateSchema = MovieUpdateRequestSchema
+MovieListSchema = MovieListResponseSchema
+MovieListItem = MovieListItemSchema
+
+CountryDetailSchema = CountrySchema
+GenreDetailSchema = GenreSchema
+ActorDetailSchema = ActorSchema
+LanguageDetailSchema = LanguageSchema
+MessageSchema = MessageResponseSchema
