@@ -10,6 +10,7 @@ app = FastAPI(
     description="Description of project"
 )
 
+
 @app.exception_handler(RequestValidationError)
 async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
     if request.method == "POST" and request.url.path.endswith("/movies/"):
