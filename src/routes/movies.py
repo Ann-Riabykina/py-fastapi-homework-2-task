@@ -63,8 +63,8 @@ def _validate_create_payload(payload: MovieCreateRequestSchema) -> Optional[str]
     if not isinstance(payload.country, str) or len(payload.country) == 0:
         return "Invalid input data."
 
-    if (not isinstance(payload.genres, list) 
-            or not isinstance(payload.actors, list) 
+    if (not isinstance(payload.genres, list)
+            or not isinstance(payload.actors, list)
             or not isinstance(payload.languages, list)):
         return "Invalid input data."
 
