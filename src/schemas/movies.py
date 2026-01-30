@@ -73,17 +73,17 @@ class MovieDetailResponseSchema(_BaseSchema):
 
 
 class MovieCreateRequestSchema(_BaseSchema):
-    name: Optional[str] = None
-    date: Optional[datetime.date] = None
-    score: Optional[float] = None
-    overview: Optional[str] = None
-    status: Optional[str] = None
-    budget: Optional[float] = None
-    revenue: Optional[float] = None
-    country: Optional[str] = None
-    genres: Optional[List[str]] = None
-    actors: Optional[List[str]] = None
-    languages: Optional[List[str]] = None
+    name: str = Field(..., max_length=255)
+    date: datetime.date
+    score: float = Field(..., ge=0, le=100)
+    overview: str
+    status: str
+    budget: float = Field(..., ge=0)
+    revenue: float = Field(..., ge=0)
+    country: str
+    genres: List[str]
+    actors: List[str]
+    languages: List[str]
 
 
 class MovieUpdateRequestSchema(_BaseSchema):
