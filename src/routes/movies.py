@@ -9,7 +9,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from database import get_db, MovieModel
-from database.models import CountryModel, GenreModel, ActorModel, LanguageModel
+from database.models import (
+    CountryModel,
+    GenreModel,
+    ActorModel,
+    LanguageModel,
+    MovieStatusEnum,
+)
 from schemas.movies import (
     MovieListResponseSchema,
     MovieDetailResponseSchema,
@@ -57,7 +63,9 @@ def _validate_create_payload(payload: MovieCreateRequestSchema) -> Optional[str]
     if not isinstance(payload.country, str) or len(payload.country) == 0:
         return "Invalid input data."
 
-    if not isinstance(payload.genres, list) or not isinstance(payload.actors, list) or not isinstance(payload.languages, list):
+    if (not isinstance(payload.genres, list) 
+            or not isinstance(payload.actors, list) 
+            or not isinstance(payload.languages, list)):
         return "Invalid input data."
 
     if any((not isinstance(x, str)) or len(x.strip()) == 0 for x in payload.genres):
@@ -140,7 +148,6 @@ async def get_movies(
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db),
 ):
-    # total
     total_items = await db.scalar(select(func.count(MovieModel.id)))
     total_items = int(total_items or 0)
 
@@ -222,8 +229,10 @@ async def create_movie(
             actors.append(await _get_or_create_by_unique_str(db, ActorModel, "name", a.strip()))
 
         languages = []
-        for l in payload.languages or []:
-            languages.append(await _get_or_create_by_unique_str(db, LanguageModel, "name", l.strip()))
+        for lang in payload.languages or []:
+            languages.append(
+                await _get_or_create_by_unique_str(db, LanguageModel, "name", lang.strip())
+            )
 
         movie = MovieModel(
             name=payload.name,
