@@ -1,8 +1,7 @@
 import datetime
-from math import ceil
 from typing import Optional, Type
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -144,6 +143,7 @@ async def _get_or_create_country(db: AsyncSession, code: str) -> CountryModel:
 
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
+    request: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db),
@@ -169,7 +169,9 @@ async def get_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_path = "/theater/movies/"
+    base_path = request.url.path
+    if base_path.startswith("/api/v1"):
+        base_path = base_path[len("/api/v1"):]
 
     prev_page = f"{base_path}?page={page - 1}&per_page={per_page}" if page > 1 else None
     next_page = f"{base_path}?page={page + 1}&per_page={per_page}" if page < total_pages else None
